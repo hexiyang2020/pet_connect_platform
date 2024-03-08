@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.hxy.mapper.PetCategoryMapper">
+
+    <resultMap type="PetCategory" id="PetCategoryResult">
+        <result property="id" column="id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectPetCategoryVo">
+        select id,
+               category_name,
+               parent_id,
+               create_time,
+               update_time,
+               create_by,
+               update_by,
+               remark
+        from pc_pet_category
+    </sql>
+
+    <select id="selectPetCategoryList" parameterType="PetCategory" resultMap="PetCategoryResult">
+        <include refid="selectPetCategoryVo"/>
+        <where>
+            <if test="categoryName != null  and categoryName != ''">and category_name like concat('%', #{categoryName},
+                '%')
+            </if>
+            <if test="parentId != null ">and parent_id = #{parentId}</if>
+        </where>
+    </select>
+
+    <select id="selectPetCategoryById" parameterType="Long" resultMap="PetCategoryResult">
+        <include refid="selectPetCategoryVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPetCategory" parameterType="PetCategory">
+        insert into pc_pet_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="categoryName != null">category_name,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="categoryName != null">#{categoryName},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePetCategory" parameterType="PetCategory">
+        update pc_pet_category
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="categoryName != null">category_name = #{categoryName},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePetCategoryById" parameterType="Long">
+        delete
+        from pc_pet_category
+        where id = #{id}
+    </delete>
+
+    <delete id="deletePetCategoryByIds" parameterType="String">
+        delete from pc_pet_category where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
